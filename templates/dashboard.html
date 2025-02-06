@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Recommendations</title>
+    <style>
+        /* General Styles */
+        body {
+            background-color: #191414;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        /* Container Styles */
+        .app-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px 0;
+            text-align: center;
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Title Styles */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #1db954;
+        }
+
+        /* Form Styles */
+        .recommendation-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        button {
+            background-color: #1db954;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #17a445;
+        }
+
+        /* Recommendation List */
+        .recommendations {
+            margin-top: 20px;
+        }
+
+        .recommendation-item {
+            display: flex;
+            justify-content: space-between;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-item span {
+            color: #1db954;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>Welcome Back!</h1>
+        <h2>Your Song Recommendations</h2>
+
+        <!-- Form for Recommendations -->
+        <form class="recommendation-form" action="/recommend" method="POST">
+            <label for="liked-song">Enter a Liked Song:</label>
+            <input type="text" id="liked-song" name="liked_song" placeholder="Enter a song you like" required>
+
+            <label for="specific-song">Or a Specific Song for Recommendations:</label>
+            <input type="text" id="specific-song" name="specific_song" placeholder="Enter a specific song">
+
+            <label for="mood">Choose a Mood:</label>
+            <select id="mood" name="mood">
+                <option value="" disabled selected>Select a mood</option>
+                <option value="happy">Happy</option>
+                <option value="sad">Sad</option>
+                <option value="energetic">Energetic</option>
+                <option value="relaxed">Relaxed</option>
+            </select>
+
+            <button type="submit">Get Recommendations</button>
+        </form>
+
+        <!-- Recommendations Section -->
+        <div class="recommendations">
+            <h2>Recommended Songs:</h2>
+            <!-- Placeholder for dynamically added recommendations -->
+            <div class="recommendation-item">
+                <span>Song Name</span> - Artist Name
+            </div>
+        </div>
+    </div>
+</body>
+</html>
