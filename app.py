@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, session, request, render_template
+from flask import Flask, redirect, url_for, session, request, render_template # type: ignore
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 import time
@@ -59,7 +59,7 @@ def callback():
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
     session['token_info'] = token_info
-    return redirect(url_for('display_tracks'))
+    return redirect(url_for('dashboard'))
 
 @app.route('/tracks')
 def display_tracks():
@@ -68,12 +68,14 @@ def display_tracks():
     if not token_info:
         return redirect('/')
     
+    # Use the token to access Spotify API (if needed for the dashboard)
     sp = Spotify(auth=token_info['access_token'])
-    results = sp.current_user_saved_tracks(limit=10)
-    tracks = [{'name': item['track']['name'], 'artist': item['track']['artists'][0]['name']}
-              for item in results['items']]
     
-    return render_template('tracks.html', tracks=tracks)
+    # Example: Fetch user profile data for display (optional)
+    user_profile = sp.current_user()
+    username = user_profile['display_name']
+    
+    return render_template('dashboard.html', username=username)
 
 if __name__ == '__main__':
     app.run(port=3000, debug=True)
