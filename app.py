@@ -1,14 +1,15 @@
-from flask import Flask, redirect, url_for, session, request, render_template # type: ignore
+from flask import Flask, redirect, url_for, session, request, render_template
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 import time
 
 # Flask app setup
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
 # Spotify credentials
-CLIENT_ID = '74f384c1133d4c628e8786c706b2575b'
-CLIENT_SECRET = '8fad1a53eda04fa99534dc7e95baf266'
+CLIENT_ID = '1346cfb41cc748ccbf22394985a55d3e'
+CLIENT_SECRET = '98b6c41c0696447198652300d8d25d14'
 REDIRECT_URI = 'http://localhost:3000/callback'
 
 # Spotify OAuth setup
@@ -58,24 +59,23 @@ def callback():
     session.clear()
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
+    print("Token info: ", token_info)
     session['token_info'] = token_info
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('display_tracks'))
 
 @app.route('/tracks')
 def display_tracks():
     """Fetch and display user's saved tracks."""
     token_info = get_token()
     if not token_info:
-        return redirect('/')
-    
-    # Use the token to access Spotify API (if needed for the dashboard)
+        return redirect(url_for('index'))
+
     sp = Spotify(auth=token_info['access_token'])
-    
-    # Example: Fetch user profile data for display (optional)
-    user_profile = sp.current_user()
-    username = user_profile['display_name']
-    
-    return render_template('dashboard.html', username=username)
+    results = sp.current_user_saved_tracks(limit=10)
+    tracks = [{'name': item['track']['name'], 'artist': item['track']['artists'][0]['name']}
+              for item in results['items']]
+
+    return render_template('tracks.html', tracks=tracks)
 
 if __name__ == '__main__':
     app.run(port=3000, debug=True)
