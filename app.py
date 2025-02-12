@@ -1,18 +1,37 @@
 from flask import Flask, redirect, url_for, session, request, render_template
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
+import time
 
 # Flask app setup
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
 # Spotify credentials
 CLIENT_ID = '74f384c1133d4c628e8786c706b2575b'
 CLIENT_SECRET = '8fad1a53eda04fa99534dc7e95baf266'
-REDIRECT_URI = 'http://localhost:3000'
+REDIRECT_URI = 'http://localhost:3000/callback'
 
 # Spotify OAuth setup
 scope = "user-library-read"
+
+def get_token():
+    token_info = session.get('token_info', None)
+    if not token_info:
+        return None
+
+    # Check if token has expired
+    now = int(time.time())
+    is_expired = token_info['expires_at'] - now < 60
+
+    if is_expired:
+        sp_oauth = SpotifyOAuth(client_id=CLIENT_ID,
+                                client_secret=CLIENT_SECRET,
+                                redirect_uri=REDIRECT_URI,
+                                scope=scope)
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+        session['token_info'] = token_info
+
+    return token_info
 
 @app.route('/')
 def index():
@@ -45,7 +64,7 @@ def callback():
 @app.route('/tracks')
 def display_tracks():
     """Fetch and display user's saved tracks."""
-    token_info = session.get('token_info', None)
+    token_info = get_token()
     if not token_info:
         return redirect('/')
     
