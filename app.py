@@ -8,8 +8,8 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
 # Spotify credentials
-CLIENT_ID = '1346cfb41cc748ccbf22394985a55d3e'
-CLIENT_SECRET = '98b6c41c0696447198652300d8d25d14'
+CLIENT_ID = '74f384c1133d4c628e8786c706b2575b'
+CLIENT_SECRET = '8fad1a53eda04fa99534dc7e95baf266'
 REDIRECT_URI = 'http://localhost:3000/callback'
 
 # Spotify OAuth setup
@@ -71,7 +71,7 @@ def display_tracks():
         return redirect(url_for('index'))
 
     sp = Spotify(auth=token_info['access_token'])
-    results = sp.current_user_saved_tracks(limit=10)
+    results = sp.current_user_saved_tracks(limit=50)
     tracks = [{'name': item['track']['name'], 'artist': item['track']['artists'][0]['name']}
               for item in results['items']]
 
